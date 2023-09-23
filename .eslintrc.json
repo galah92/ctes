@@ -17,12 +17,26 @@
   },
   "plugins": ["@typescript-eslint", "@ts-safeql/eslint-plugin"],
   "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
     "@ts-safeql/check-sql": [
       "error",
       {
         "connections": [
           {
             "databaseUrl": "postgres://postgres:postgres@localhost:5432/postgres",
+            "overrides": {
+              "types": {
+                "bigint": "string"
+              }
+            },
             "targets": [
               {
                 "tag": "sql",
