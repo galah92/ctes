@@ -9,6 +9,9 @@ const sql = postgres({
 });
 
 (async () => {
-  const [{ now }] = await sql`SELECT NOW()`;
+  type NowRow = {
+    now: Date;
+  };
+  const [{ now }] = await sql<NowRow[]>`SELECT NOW()`;
   console.log(now);
 })();
