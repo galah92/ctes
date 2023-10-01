@@ -46,6 +46,13 @@ INSERT INTO locations (name, parent, population, location_type) VALUES
   `;
 };
 
+type Location = {
+  name: string;
+  population: number;
+  location_type: 'country' | 'state' | 'city';
+  parent: string | null;
+};
+
 const getParents = async (name: string): Promise<string[]> => {
   type Ansestors = {
     parents: string[] | null;
@@ -82,15 +89,29 @@ WHERE
   return parents ?? [];
 };
 
+const getLocationType = async (name: string): Promise<string> => {
+  type LocationType = Pick<Location, 'location_type'>;
+  const [{ location_type }] = await sql<LocationType[]>`
+SELECT
+  location_type
+FROM
+  locations
+WHERE
+  name = ${name}
+;
+  `;
+  return location_type;
+};
+
 (async () => {
-  type NowRow = {
-    now: Date;
-  };
-  const [{ now }] = await sql<NowRow[]>`SELECT NOW()`;
+  const [{ now }] = await sql<{ now: Date }[]>`SELECT NOW()`;
   console.log(now);
 
-  // await initDb();
+  // await _initDb();
 
   const parents = await getParents('Austin');
   console.log(parents);
+
+  const locationType = await getLocationType('Austin');
+  console.log(locationType);
 })();
